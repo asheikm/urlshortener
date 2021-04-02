@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/asheikm/urlshortener)](https://goreportcard.com/report/github.com/asheikm/urlshortener)
+
 # URLShortener
 
 URL Shortener App - This application will shorten the given url and store the data in flatfile
