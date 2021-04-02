@@ -11,16 +11,15 @@ func TestIsValidURLwithnoInput(t *testing.T) {
 }
 
 func TestWithValidUrl(t *testing.T) {
-        result := utils.IsValidURL("www.google.com/test")
-        if result != true {
-                t.Errorf("URL is not validated properly")
-        }
+	result := utils.IsValidURL("www.google.com/test")
+	if result != true {
+		t.Errorf("URL is not validated properly")
+	}
 }
 
 func TestWithNotValidUrl(t *testing.T) {
-        result := utils.IsValidURL("www.googlecom/test")
-        if result != true {
-                t.Errorf("URL is not validated properly")
-        }
+	result := utils.IsValidURL("www.googlecom/test")
+	if result != true {
+		t.Errorf("URL is not validated properly")
+	}
 }
-

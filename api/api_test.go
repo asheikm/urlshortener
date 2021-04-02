@@ -14,7 +14,7 @@ func (h *TestGetHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *TestPostHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-        api.CreateShortenedURL(w, r)
+	api.CreateShortenedURL(w, r)
 }
 
 func TestGetDomain(t *testing.T) {
@@ -29,19 +29,16 @@ func TestGetDomain(t *testing.T) {
 }
 
 func TestPostReq(t *testing.T) {
-        h := &TestGetHandler{}
-        server := httptest.NewServer(h)
-        defer server.Close()
+	h := &TestGetHandler{}
+	server := httptest.NewServer(h)
+	defer server.Close()
 
-        // Make a test request
-        resp, err := http.Get(os.Getenv("SHORT_DOMAIN"))
-        if err != nil {
-                t.Fatal(err)
-        }
-        if resp.StatusCode != 200 {
-                t.Fatalf("Received non-200 response: %d\n", resp.StatusCode)
-        }
+	// Make a test request
+	resp, err := http.Get(os.Getenv("SHORT_DOMAIN"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if resp.StatusCode != 200 {
+		t.Fatalf("Received non-200 response: %d\n", resp.StatusCode)
+	}
 }
-
-
-

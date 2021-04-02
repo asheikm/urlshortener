@@ -23,4 +23,3 @@ func TestAddDataToMapPassCase(t *testing.T) {
 		t.Errorf("Unable to add to map: case failed")
 	}
 }
-

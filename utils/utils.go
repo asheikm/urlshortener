@@ -16,6 +16,7 @@ var URLIP string = `([1-9]\d?|1\d\d|2[01]\d|22[0-3]|24\d|25[0-5])(\.(\d{1,2}|1\d
 var URLSubdomain string = `((www\.)|([a-zA-Z0-9]+([-_\.]?[a-zA-Z0-9])*[a-zA-Z0-9]\.[a-zA-Z0-9]+))`
 var regExURL string = `^` + URLSchema + `?` + URLUsername + `?` + `((` + URLIP + `|(\[` + IP + `\])|(([a-zA-Z0-9]([a-zA-Z0-9-_]+)?[a-zA-Z0-9]([-\.][a-zA-Z0-9]+)*)|(` + URLSubdomain + `?))?(([a-zA-Z\x{00a1}-\x{ffff}0-9]+-?-?)*[a-zA-Z\x{00a1}-\x{ffff}0-9]+)(?:\.([a-zA-Z\x{00a1}-\x{ffff}]{1,}))?))\.?` + URLPort + `?` + URLPath + `?$`
 
+// Check if given url is valid or not
 func IsValidURL(urlStr string) bool {
 	var urlwithHttp string
 	if strings.Contains(urlStr, ":") && !strings.Contains(urlStr, "://") {
@@ -34,9 +35,9 @@ func IsValidURL(urlStr string) bool {
 	return regexp.MustCompile(regExURL).MatchString(urlStr)
 }
 
-func StripURL(urlStr string) (string) {
-        re := regexp.MustCompile("^(http[s]?://www\\.|http[s]?://|www\\.)")
+func StripURL(urlStr string) string {
+	re := regexp.MustCompile("^(http[s]?://www\\.|http[s]?://|www\\.)")
 	rep := ""
 	retStr := re.ReplaceAllString(urlStr, rep)
-        return retStr
+	return retStr
 }
