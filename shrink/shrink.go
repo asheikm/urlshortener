@@ -67,6 +67,21 @@ func AddDataToMap(incomingUrl model.UrlStruct) (bool, error) {
 	return IsURLExists(incomingUrl.LongUrl)
 }
 
+// Get Data from map
+func GetDataFromMap(url string) (string, bool) {
+	return getKey(UrlLookup, url)
+}
+
+// Get key of a value from map
+func getKey(m map[string]string, value string) (string, bool) {
+	for k, v := range m {
+		if v == value {
+			return k, true
+		}
+	}
+	return "", false
+}
+
 // Check if url exists inmemory
 func IsURLExists(url string) (bool, error) {
 	_, ok := UrlLookup[url]

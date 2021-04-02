@@ -16,7 +16,7 @@ import (
 // This init function is by default called only once
 func init() {
 	if os.Getenv("SHORT_DOMAIN") == "" {
-		os.Setenv("SHORT_DOMAIN", "http://localhost:"+os.Getenv("LISTEN_PORT")+"/")
+		os.Setenv("SHORT_DOMAIN", "http://example.me/")
 	}
 	shrink.UrlLookup = make(map[string]string)
 }
@@ -36,7 +36,7 @@ func logRequestData(r *http.Request) {
 }
 
 // wrapper function for json decoder
-func jsonDecodeWrapper(r *http.Request, iu InputUrl) (error, InputUrl) {
+func JsonDecodeWrapper(r *http.Request, iu InputUrl) (error, InputUrl) {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&iu)
 	if err != nil {
@@ -56,7 +56,7 @@ func GetShortenedURL(w http.ResponseWriter, r *http.Request) {
 	var incomingUrl InputUrl
 	var urls model.UrlStruct
 	logRequestData(r)
-	err, incomingUrl := jsonDecodeWrapper(r, incomingUrl)
+	err, incomingUrl := JsonDecodeWrapper(r, incomingUrl)
 	if err != nil {
 		json.NewEncoder(w).Encode("Unable to decode json input")
 	}
@@ -76,7 +76,7 @@ func CreateShortenedURL(w http.ResponseWriter, r *http.Request) {
 	var urls model.UrlStruct
 	var incomingUrl InputUrl
 	logRequestData(r)
-	err, incomingUrl := jsonDecodeWrapper(r, incomingUrl)
+	err, incomingUrl := JsonDecodeWrapper(r, incomingUrl)
 	if utils.IsValidURL(incomingUrl.Url) != true {
 		w.WriteHeader(400)
 		w.Write([]byte("Invalid input url"))

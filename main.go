@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"urlshortener/api"
+	"urlshortener/redirect"
 
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
@@ -43,6 +44,7 @@ func main() {
 	router.HandleFunc("/", api.GetVersion).Methods("GET")
 	router.HandleFunc("/shrink", api.GetShortenedURL).Methods("GET")
 	router.HandleFunc("/shrink", api.CreateShortenedURL).Methods("POST")
+	router.HandleFunc("/redirect", redirect.RedirectURL).Methods("GET")
 	logrus.Info("Starting server and listening on port " + port)
 	err = http.ListenAndServe(":"+port, router)
 	if err != nil {
