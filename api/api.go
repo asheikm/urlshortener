@@ -1,4 +1,4 @@
-// Middleware/Backend for rest api
+//Package api - Middleware/Backend for rest api
 package api
 
 import (

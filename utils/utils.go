@@ -1,4 +1,4 @@
-// Package has common utility functions that can be used across the applicaiton codebase
+// Package utils has common utility functions that can be used across the application codebase
 package utils
 
 import (

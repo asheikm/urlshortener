@@ -1,4 +1,5 @@
 // Package has functions that can shorten the given url
+// Package shrink
 package shrink
 
 import (
