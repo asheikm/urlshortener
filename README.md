@@ -64,6 +64,7 @@ Curl command to generate shortened url
    
   - Run `curl -X POST -d '{"url": "google.com"}'  http://localhost:8080/shrink --header "Content-Type:application/json"` which will get you the shortend url 
   - Run `curl -X GET -H "Content-type: application/json" \-H "Accept: application/json" -d '{"url":"google.com"}' "http://localhost:8080/shrink"` (This will fectch if the shortened url is present inmemory or flatfile
+  - Run ` curl -v -X GET -H "Content-type: application/json" \-H "Accept: application/json" -d '{"url":"http://localhost/<shortcode>"}' "http://localhost:8080/redirect"` to redirect given url 
   - We can also use postman or similar tools to check GET/POST methods described above.
 
 # Known issues
