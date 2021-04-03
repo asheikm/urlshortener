@@ -21,10 +21,6 @@ func init() {
 	shrink.UrlLookup = make(map[string]string)
 }
 
-type InputUrl struct {
-	Url string `json:"url"`
-}
-
 // log input request data
 func logRequestData(r *http.Request) {
 	dump, err := httputil.DumpRequest(r, true)
@@ -35,16 +31,6 @@ func logRequestData(r *http.Request) {
 	logrus.Info("Request dump: ", string(dump))
 }
 
-// wrapper function for json decoder
-func JsonDecodeWrapper(r *http.Request, iu InputUrl) (error, InputUrl) {
-	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&iu)
-	if err != nil {
-		logrus.Error(err)
-	}
-	return err, iu
-}
-
 // Version Handler
 func GetVersion(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
@@ -53,10 +39,10 @@ func GetVersion(w http.ResponseWriter, r *http.Request) {
 
 // Handler function implemenation for get call with request url
 func GetShortenedURL(w http.ResponseWriter, r *http.Request) {
-	var incomingUrl InputUrl
+	var incomingUrl model.InputUrl
 	var urls model.UrlStruct
 	logRequestData(r)
-	err, incomingUrl := JsonDecodeWrapper(r, incomingUrl)
+	err, incomingUrl := utils.JsonDecodeWrapper(r, incomingUrl)
 	if err != nil {
 		json.NewEncoder(w).Encode("Unable to decode json input")
 	}
@@ -74,9 +60,9 @@ func GetShortenedURL(w http.ResponseWriter, r *http.Request) {
 // Handler function implementation for post call with request url
 func CreateShortenedURL(w http.ResponseWriter, r *http.Request) {
 	var urls model.UrlStruct
-	var incomingUrl InputUrl
+	var incomingUrl model.InputUrl
 	logRequestData(r)
-	err, incomingUrl := JsonDecodeWrapper(r, incomingUrl)
+	err, incomingUrl := utils.JsonDecodeWrapper(r, incomingUrl)
 	if utils.IsValidURL(incomingUrl.Url) != true {
 		w.WriteHeader(400)
 		w.Write([]byte("Invalid input url"))

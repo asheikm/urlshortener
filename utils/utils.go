@@ -2,9 +2,14 @@
 package utils
 
 import (
+	"encoding/json"
+	"net/http"
 	"net/url"
 	"regexp"
 	"strings"
+	"urlshortener/model"
+
+	"github.com/sirupsen/logrus"
 )
 
 var IP string = `(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))`
@@ -40,4 +45,14 @@ func StripURL(urlStr string) string {
 	rep := ""
 	retStr := re.ReplaceAllString(urlStr, rep)
 	return retStr
+}
+
+// wrapper function for json decoder
+func JsonDecodeWrapper(r *http.Request, iu model.InputUrl) (error, model.InputUrl) {
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&iu)
+	if err != nil {
+		logrus.Error(err)
+	}
+	return err, iu
 }

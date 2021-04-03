@@ -3,16 +3,17 @@ package redirect
 
 import (
 	"net/http"
-	"urlshortener/api"
+	"urlshortener/model"
 	"urlshortener/shrink"
+	"urlshortener/utils"
 
 	"github.com/sirupsen/logrus"
 )
 
 func RedirectURL(w http.ResponseWriter, r *http.Request) {
-	var url api.InputUrl
+	var url model.InputUrl
 	// Check if given url found on the memory map
-	err, v := api.JsonDecodeWrapper(r, url)
+	err, v := utils.JsonDecodeWrapper(r, url)
 	if err != nil {
 		w.WriteHeader(500)
 	}

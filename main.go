@@ -28,7 +28,7 @@ func main() {
 		os.Setenv("LISTEN_PORT", "8080")
 	}
 	if os.Getenv("LOGFILE_PATH") == "" {
-		os.Setenv("LOGFILE_PATH", "./log/urlshortener_log.out")
+		os.Setenv("LOGFILE_PATH", "./urlshortener_log.out")
 	}
 	// Get the listing port number and logfile path from os env variables
 	logrus.Info("LISTEN_PORT  : " + os.Getenv("LISTEN_PORT"))
