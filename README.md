@@ -2,7 +2,8 @@
 
 # URLShortener
 
-URL Shortener App - This application will shorten the given url and store the data in flatfile
+URL Shortener App - This application will shorten the given url and store the data in flatfile.
+Note: This application is not ready for production, written for learning purpose.
 
 # Getting started
 
