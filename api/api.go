@@ -1,4 +1,3 @@
-//Package api - Middleware/Backend for rest api
 package api
 
 import (
@@ -13,7 +12,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// This init function is by default called only once
 func init() {
 	if os.Getenv("SHORT_DOMAIN") == "" {
 		os.Setenv("SHORT_DOMAIN", "http://example.me/")
@@ -21,72 +19,96 @@ func init() {
 	shrink.UrlLookup = make(map[string]string)
 }
 
-// log input request data
+// logRequestData logs the input request data
 func logRequestData(r *http.Request) {
 	dump, err := httputil.DumpRequest(r, true)
 	if err != nil {
-		logrus.Error(err, http.StatusInternalServerError)
+		logrus.Error("Failed to dump request: ", err)
 		return
 	}
 	logrus.Info("Request dump: ", string(dump))
 }
 
-// Version Handler
-func GetVersion(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(200)
+// GetVersion returns the API version
+func GetVersion(w http.ResponseWriter, _ *http.Request) {
+	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("v1.0"))
 }
 
-// Handler function implemenation for get call with request url
+// GetShortenedURL handles GET requests to retrieve a shortened URL
 func GetShortenedURL(w http.ResponseWriter, r *http.Request) {
-	var incomingUrl model.InputUrl
-	var urls model.UrlStruct
 	logRequestData(r)
-	err, incomingUrl := utils.JsonDecodeWrapper(r, incomingUrl)
-	if err != nil {
-		json.NewEncoder(w).Encode("Unable to decode json input")
+
+	var incomingUrl model.InputUrl
+	if err := json.NewDecoder(r.Body).Decode(&incomingUrl); err != nil {
+		http.Error(w, "Unable to decode JSON input", http.StatusBadRequest)
+		return
 	}
-	logrus.Info("Get shortened url for : " + incomingUrl.Url)
+
+	logrus.Info("Get shortened url for: ", incomingUrl.Url)
 	strippedUrl := utils.StripURL(incomingUrl.Url)
-	if utils.IsValidURL(strippedUrl) != true {
-		w.WriteHeader(400)
-		w.Write([]byte("Invalid input url"))
+	if !utils.IsValidURL(strippedUrl) {
+		http.Error(w, "Invalid input URL", http.StatusBadRequest)
+		return
 	}
-	urls.LongUrl = incomingUrl.Url
-	urls.ShortUrl = shrink.UrlLookup[strippedUrl]
-	json.NewEncoder(w).Encode(urls)
+
+	shortUrl, exists := shrink.UrlLookup[strippedUrl]
+	if !exists {
+		http.Error(w, "URL not found", http.StatusNotFound)
+		return
+	}
+
+	response := model.UrlStruct{
+		LongUrl:  incomingUrl.Url,
+		ShortUrl: shortUrl,
+	}
+	json.NewEncoder(w).Encode(response)
 }
 
-// Handler function implementation for post call with request url
+// CreateShortenedURL handles POST requests to create a shortened URL
 func CreateShortenedURL(w http.ResponseWriter, r *http.Request) {
-	var urls model.UrlStruct
-	var incomingUrl model.InputUrl
 	logRequestData(r)
-	err, incomingUrl := utils.JsonDecodeWrapper(r, incomingUrl)
-	if utils.IsValidURL(incomingUrl.Url) != true {
-		w.WriteHeader(400)
-		w.Write([]byte("Invalid input url"))
+
+	var incomingUrl model.InputUrl
+	if err := json.NewDecoder(r.Body).Decode(&incomingUrl); err != nil {
+		http.Error(w, "Unable to decode JSON input", http.StatusBadRequest)
+		return
 	}
-	logrus.Info(incomingUrl.Url)
-	_ = json.NewDecoder(r.Body).Decode(&incomingUrl.Url)
-	logrus.Info("Long Url: ", incomingUrl.Url)
-	// Remove http or www from request body
-	urls.LongUrl = utils.StripURL(incomingUrl.Url)
-	// Check if data already present in memory
-	ok, err := shrink.IsURLExists(urls.LongUrl)
-	if ok {
-		json.NewEncoder(w).Encode("Url already exists in memory or file")
-	} else {
-		id := shrink.GenerateID()
-		urls.ShortUrl = os.Getenv("SHORT_DOMAIN") + id
-		json.NewEncoder(w).Encode(urls)
-		_, err = shrink.AddDataToMap(urls)
-		if err != nil {
-			json.NewEncoder(w).Encode("Unable to add url into memory")
-		}
-		_, err = shrink.AddDataToFile(urls)
-		if err != nil {
-			json.NewEncoder(w).Encode("Unable to add url into memory")
-		}
+
+	logrus.Info("Received URL: ", incomingUrl.Url)
+	strippedUrl := utils.StripURL(incomingUrl.Url)
+	if !utils.IsValidURL(strippedUrl) {
+		http.Error(w, "Invalid input URL", http.StatusBadRequest)
+		return
 	}
+
+	exists, err := shrink.IsURLExists(strippedUrl)
+	if err != nil {
+		http.Error(w, "Error checking URL existence", http.StatusInternalServerError)
+		return
+	}
+
+	if exists {
+		http.Error(w, "URL already exists", http.StatusConflict)
+		return
+	}
+
+	id := shrink.GenerateID()
+	shortUrl := os.Getenv("SHORT_DOMAIN") + id
+	response := model.UrlStruct{
+		LongUrl:  strippedUrl,
+		ShortUrl: shortUrl,
+	}
+
+	if _, err := shrink.AddDataToMap(response); err != nil {
+		http.Error(w, "Unable to add URL to memory", http.StatusInternalServerError)
+		return
+	}
+
+	if _, err := shrink.AddDataToFile(response); err != nil {
+		http.Error(w, "Unable to add URL to file", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(response)
 }
