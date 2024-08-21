@@ -2,27 +2,25 @@
 
 # URLShortener
 
-URL Shortener App - This application will shorten the given url and store the data in flatfile.
-Note: This application is not ready for production, written for learning purpose.
+URL Shortener App - This application shortens a given URL and stores the data in a flat file.
+**Note:** This application is not production-ready and was developed for learning purposes.
 
-# Getting started
+## Getting Started
 
-To get this app running locally:
+To run this app locally:
 
-- Clone this repo
-- Install Golang programming language ([instructions](https://golang.org/doc/install))
-- Install Docker ([instructions](https://docs.docker.com/engine/install/))
+1. Clone this repository.
+2. Install the Go programming language ([instructions](https://golang.org/doc/install)).
+3. Install Docker ([instructions](https://docs.docker.com/engine/install/)).
 
+## Basic Configuration
 
-# Basic Configuration
+This app uses environment variables for configuration. To run the app as a standalone application, set the following environment variables:
 
-Configuration 
-   
-   - This app uses listening port, logging path, and short url fqdn from environment variables if you want to run this as a standalone 
-     application , use the following commands 
-   - `export LISTEN_PORT=8080`
-   - `export LOGFILE_PATH="./log/log.out"`
-   - `export SHORT_DOMAIN="localhost:8080/"`
+```bash
+export LISTEN_PORT=8080
+export LOGFILE_PATH="./log/log.out"
+export SHORT_DOMAIN="localhost:8080/"
 
 # Build and run
 
