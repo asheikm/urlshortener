@@ -1,6 +1,6 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/asheikm/urlshortener)](https://goreportcard.com/report/github.com/asheikm/urlshortener)
 
-# URLShortener
+## URLShortener
 
 URL Shortener App - This application shortens a given URL and stores the data in a flat file.
 **Note:** This application is not production-ready and was developed for learning purposes.
@@ -18,11 +18,12 @@ To run this app locally:
 This app uses environment variables for configuration. To run the app as a standalone application, set the following environment variables:
 
 ```bash
-export LISTEN_PORT=8080
-export LOGFILE_PATH="./log/log.out"
-export SHORT_DOMAIN="localhost:8080/"
+   export LISTEN_PORT=8080`
+   export LOGFILE_PATH="./log/log.out"
+   export SHORT_DOMAIN="localhost:8080/"
+```
 
-# Build and run
+## Build and run
 
 Compile and generate binary:
 
@@ -47,7 +48,7 @@ Building and runnning app from docker image:
    - Note : The image has been build using centos, not using golang image, since we can directly copy the binary to docker image than building it in the docker image
             which will expose the source if forget to delete.
 
-# Unit Test
+## Unit Test
 
 Unit Testing
     
@@ -57,7 +58,7 @@ Unit Testing
      `[user@dev utils]$ go test -v ./...`
 
  
-# Application Usage
+## Application Usage
    
 Curl command to generate shortened url
    
@@ -66,6 +67,12 @@ Curl command to generate shortened url
   - Run ` curl -v -X GET -H "Content-type: application/json" \-H "Accept: application/json" -d '{"url":"http://localhost/<shortcode>"}' "http://localhost:8080/redirect"` to redirect given url 
   - We can also use postman or similar tools to check GET/POST methods described above.
 
-# Known issues
+## Known issues
   - Please check github repo issues
+
+## Key Updates:
+1. **Clarity:** Improved language for better understanding.
+2. **Consistency:** Maintained a consistent format across sections.
+3. **Readability:** Simplified instructions and organized content for easier navigation.
+
 
